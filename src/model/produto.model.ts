@@ -4,6 +4,8 @@ export interface ProdutoDados {
     preco: number;
 }
 
+export type NovoProduto = Omit<ProdutoDados, "id">;
+
 export class Produto implements ProdutoDados {
     id: number;
     nome: string;

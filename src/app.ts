@@ -1,12 +1,22 @@
 import express from "express";
-import produtoRoutes from "./routes/produto.routes";
+import { criarProdutoController } from "./controllers/produto.controller";
+import { tratarErros } from "./middlewares/erro.middleware";
+import { ProdutoRepository } from "./repository/produto.repository";
+import { ProdutoRepositorySequelize } from "./repository/produto.repository.sequelize";
+import { criarProdutoRoutes } from "./routes/produto.routes";
+import { ProdutoUseCase } from "./useCases/produto.usecase";
 
-const app = express();
+export function criarApp(
+  repository: ProdutoRepository = new ProdutoRepositorySequelize()
+) {
+  const app = express();
 
-app.use(express.json());
+  app.use(express.json());
 
-app.use("/produtos", produtoRoutes);
+  const produtoController = criarProdutoController(new ProdutoUseCase(repository));
+  app.use("/produtos", criarProdutoRoutes(produtoController));
 
-app.listen(3000, () => {
-  console.log("Servidor rodando em http://localhost:3000");
-});
+  app.use(tratarErros);
+
+  return app;
+}

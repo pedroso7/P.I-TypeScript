@@ -1,4 +1,4 @@
-import { Produto } from "../model/produto.model";
+import { NovoProduto, Produto } from "../model/produto.model";
 
 export interface ProdutoRepository {
 
@@ -9,6 +9,15 @@ export interface ProdutoRepository {
   ): Promise<Produto | null>;
 
   criar(
-    produto: Produto
+    produto: NovoProduto
   ): Promise<Produto>;
+
+  atualizar(
+    id: number,
+    produto: NovoProduto
+  ): Promise<Produto | null>;
+
+  remover(
+    id: number
+  ): Promise<boolean>;
 }

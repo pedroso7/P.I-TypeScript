@@ -1,19 +1,30 @@
 import { Router } from "express";
-import * as produtoController
-  from "../controllers/produto.controller";
+import { ProdutoController } from "../controllers/produto.controller";
 
-const router = Router();
+export function criarProdutoRoutes(produtoController: ProdutoController): Router {
+  const router = Router();
 
-router.get("/", produtoController.listar);
+  router.get("/", produtoController.listar);
 
-router.get(
-  "/:id",
-  produtoController.buscarPorId
-);
+  router.get(
+    "/:id",
+    produtoController.buscarPorId
+  );
 
-router.post(
-  "/",
-  produtoController.criar
-);
+  router.post(
+    "/",
+    produtoController.criar
+  );
 
-export default router;
+  router.put(
+    "/:id",
+    produtoController.atualizar
+  );
+
+  router.delete(
+    "/:id",
+    produtoController.remover
+  );
+
+  return router;
+}
