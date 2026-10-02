@@ -1,19 +1,19 @@
-const Produto = require("../model/produto.model");
+import { Produto, ProdutoDados } from "../model/produto.model";
 
-const produtos = [
+const produtos: Produto[] = [
     new Produto({ id: 1, nome: "Notebook", preco: 3500 }),
     new Produto({ id: 2, nome: "Mouse", preco: 120 })
 ];
 
-function listar() {
+export function listar(): Produto[] {
     return produtos;
 }
 
-function buscarPorId(id) {
+export function buscarPorId(id: string | number): Produto | undefined {
     return produtos.find(p => p.id === Number(id));
 }
 
-function criar(dados) {
+export function criar(dados: Partial<Omit<ProdutoDados, "id">>): Produto {
     if (!dados.nome || dados.preco == null) {
         throw new Error("nome e preco são obrigatórios");
     }
@@ -21,11 +21,9 @@ function criar(dados) {
     const produto = new Produto({
         id: produtos.length + 1,
         nome: dados.nome,
-        preco: dados.preco
+        preco: Number(dados.preco)
     });
 
     produtos.push(produto);
     return produto;
 }
-
-module.exports = { listar, buscarPorId, criar };
