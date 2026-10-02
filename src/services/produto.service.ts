@@ -1,22 +1,24 @@
 import { Produto, ProdutoDados } from "../model/produto.model";
+import { ProdutoRepository } from "../repository/produto.repository";
+import { ProdutoRepositoryMemoria } from "../repository/produto.repository.memoria";
 
-const produtos: Produto[] = [
-    new Produto({ id: 1, nome: "Notebook", preco: 3500 }),
-    new Produto({ id: 2, nome: "Mouse", preco: 120 })
-];
+// O service depende só da interface (Dependency Inversion).
+const repository: ProdutoRepository = new ProdutoRepositoryMemoria();
 
-export function listar(): Produto[] {
-    return produtos;
+export async function listar(): Promise<Produto[]> {
+    return repository.listar();
 }
 
-export function buscarPorId(id: string | number): Produto | undefined {
-    return produtos.find(p => p.id === Number(id));
+export async function buscarPorId(id: string | number): Promise<Produto | null> {
+    return repository.buscarPorId(Number(id));
 }
 
-export function criar(dados: Partial<Omit<ProdutoDados, "id">>): Produto {
+export async function criar(dados: Partial<Omit<ProdutoDados, "id">>): Promise<Produto> {
     if (!dados.nome || dados.preco == null) {
         throw new Error("nome e preco são obrigatórios");
     }
+
+    const produtos = await repository.listar();
 
     const produto = new Produto({
         id: produtos.length + 1,
@@ -24,6 +26,5 @@ export function criar(dados: Partial<Omit<ProdutoDados, "id">>): Produto {
         preco: Number(dados.preco)
     });
 
-    produtos.push(produto);
-    return produto;
+    return repository.criar(produto);
 }
